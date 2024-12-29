@@ -1,6 +1,9 @@
-use std::{ffi::c_void, io::{self}};
+use std::io::{self};
+use serde::{Serialize, Deserialize};
+use std::fs::File;
+use std::io::Write;
 
-#[derive(Debug)]
+#[derive(Serialize, Deserialize, Debug)]
 struct Cat{
     name: String,
     hunger: i8
@@ -19,7 +22,7 @@ impl Cat {
     }
 }
 
-#[derive(Debug)]
+#[derive(Serialize, Deserialize, Debug)]
 struct CatCollection{
     cats: Vec<Cat>
 }
@@ -55,6 +58,14 @@ impl CatCollection{
         }
         println!("Your cats have been fed!\n\n");
     }
+
+    fn save(&mut self) -> Result<(), Box<dyn std::error::Error>> {
+        let json_data = serde_json::to_string_pretty(&self)?;
+        let mut file = File::create("cats.json")?;
+        file.write_all(json_data.as_bytes())?;
+
+        Ok(())
+    }
 }
 
 fn main() {
@@ -79,7 +90,10 @@ fn main() {
             1 => cat_collection.add_cat(),
             2 => cat_collection.view_cats(),
             3 => cat_collection.feed_cats(),
-            4 => break,
+            4 => {
+                let _ = cat_collection.save();
+                break;
+            },
             _=> {
                 println!("Select a valid option");
             }
