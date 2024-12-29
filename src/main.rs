@@ -3,22 +3,46 @@ use serde::{Serialize, Deserialize};
 use std::fs::File;
 use std::io::Write;
 
+fn handle_negative(number: usize) -> usize{
+    if number < 0{
+        0
+    } else{
+        number
+    }
+}
+
 #[derive(Serialize, Deserialize, Debug)]
 struct Cat{
     name: String,
-    hunger: i8
+    hunger: usize,
+    happiness: usize,
+    bloodlust: usize
 }
 
 impl Cat {
     fn new(name: &str) -> Self{
         Self{
             name: name.to_string(),
-            hunger: 6
+            hunger: 10,
+            happiness: 1,
+            bloodlust: 10
         }
     }
 
     fn feed(&mut self){
-        self.hunger = 0;
+        self.hunger +=2;
+        self.happiness += 2;
+        self.bloodlust -= 2;
+        // let temp = self.bloodlust;
+        // self.bloodlust = handle_negative(temp);
+    }
+
+    fn show_cat_stats(&mut self){
+        println!("\n\n");
+        println!("{:?}", self.name.to_uppercase());
+        println!("Hunger: {}", "X".repeat(self.hunger));
+        println!("Happiness: {}", "X".repeat(self.happiness));
+        println!("Bloodlust: {}", "X".repeat(self.bloodlust));
     }
 }
 
@@ -48,8 +72,10 @@ impl CatCollection{
         print!("{cat_name} has been created!\n\n");
     }
 
-    fn view_cats(&self){
-        println!("{:?}\n\n", self.cats);
+    fn view_cats(&mut self){
+        for cat in &mut self.cats{
+            cat.show_cat_stats();
+        }
     }
 
     fn feed_cats(&mut self){
