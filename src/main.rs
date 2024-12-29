@@ -68,8 +68,29 @@ impl CatCollection{
     }
 }
 
+fn read_cats_from_json() -> Result<CatCollection, Box<dyn std::error::Error>> {
+    // Read the file contents into a string
+    let file_content = std::fs::read_to_string("cats.json")?;
+
+    // Deserialize the JSON string into a CatOwner object
+    let cat_owner: CatCollection = serde_json::from_str(&file_content)?;
+    Ok(cat_owner)
+}
+
 fn main() {
-    let mut cat_collection = CatCollection::new();
+    // let mut cat_collection = CatCollection::new();
+
+    // let cat_collection = read_cats_from_json();
+    // println!("TEST: {:?}", test);
+    let mut cat_collection = match read_cats_from_json() {
+        Ok(collection) => collection,
+        Err(_) => {
+            println!("Failed to load cats from file. Starting with an empty collection.");
+            CatCollection::new()  // Start with an empty collection if file reading fails
+        }
+    };
+    
+
     loop {
         println!("Welcome to the virtual cat simulator! What would you like to do?\n");
         println!("1. Create a cat");
@@ -86,7 +107,6 @@ fn main() {
         let choice:i8 = choice.trim().parse().unwrap();
 
         match choice {
-            // 1 => new_cat(cat_collection),
             1 => cat_collection.add_cat(),
             2 => cat_collection.view_cats(),
             3 => cat_collection.feed_cats(),
