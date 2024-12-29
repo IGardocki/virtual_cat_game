@@ -1,15 +1,10 @@
+mod cat_art;
+
 use std::io::{self};
 use serde::{Serialize, Deserialize};
 use std::fs::File;
 use std::io::Write;
 
-fn handle_negative(number: usize) -> usize{
-    if number < 0{
-        0
-    } else{
-        number
-    }
-}
 
 #[derive(Serialize, Deserialize, Debug)]
 struct Cat{
@@ -30,16 +25,14 @@ impl Cat {
     }
 
     fn feed(&mut self){
-        self.hunger +=2;
+        self.hunger = self.hunger.saturating_sub(2);
         self.happiness += 2;
-        self.bloodlust -= 2;
-        // let temp = self.bloodlust;
-        // self.bloodlust = handle_negative(temp);
+        self.bloodlust = self.bloodlust.saturating_sub(2); //saturating sub ensures number doesn't go below 0
     }
 
     fn show_cat_stats(&mut self){
         println!("\n\n");
-        println!("{:?}", self.name.to_uppercase());
+        println!("{}", self.name.to_uppercase());
         println!("Hunger: {}", "X".repeat(self.hunger));
         println!("Happiness: {}", "X".repeat(self.happiness));
         println!("Bloodlust: {}", "X".repeat(self.bloodlust));
@@ -69,7 +62,8 @@ impl CatCollection{
         let cat_name=cat_name.trim();
         let new_cat = Cat::new(&cat_name);
         self.cats.push(new_cat);
-        print!("{cat_name} has been created!\n\n");
+        println!("{}", cat_art::CAT_CREATED);
+        println!("{cat_name} has been created!\n\n");
     }
 
     fn view_cats(&mut self){
@@ -82,6 +76,7 @@ impl CatCollection{
         for cat in &mut self.cats{
             cat.feed();
         }
+        println!("{}", cat_art::CAT_EATING.repeat(self.cats.len()));
         println!("Your cats have been fed!\n\n");
     }
 
@@ -95,19 +90,12 @@ impl CatCollection{
 }
 
 fn read_cats_from_json() -> Result<CatCollection, Box<dyn std::error::Error>> {
-    // Read the file contents into a string
     let file_content = std::fs::read_to_string("cats.json")?;
-
-    // Deserialize the JSON string into a CatOwner object
     let cat_owner: CatCollection = serde_json::from_str(&file_content)?;
     Ok(cat_owner)
 }
 
 fn main() {
-    // let mut cat_collection = CatCollection::new();
-
-    // let cat_collection = read_cats_from_json();
-    // println!("TEST: {:?}", test);
     let mut cat_collection = match read_cats_from_json() {
         Ok(collection) => collection,
         Err(_) => {
@@ -122,7 +110,7 @@ fn main() {
         println!("1. Create a cat");
         println!("2. Show your cats");
         println!("3. Feed your cats");
-        println!("4. Exit");
+        println!("4. Save and exit");
 
         let mut choice:String = String::new();
 
