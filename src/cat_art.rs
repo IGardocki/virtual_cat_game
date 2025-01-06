@@ -14,3 +14,11 @@ pub const CAT_EATING: &str = r#"
  Nom Nom Nom!
 "#;
 
+pub const CAT_PLAYING: &str = r#"
+     /\_/\  
+    ( o.o ) 
+     > ^ <  /
+       | |  //
+       (_|_//
+    "#;
+

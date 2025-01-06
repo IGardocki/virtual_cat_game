@@ -1,5 +1,5 @@
 mod cat_art;
-
+use chrono::{Utc, Duration};
 use std::io::{self};
 use serde::{Serialize, Deserialize};
 use std::fs::File;
@@ -107,6 +107,7 @@ fn main() {
 
     loop {
         println!("Welcome to the virtual cat simulator! What would you like to do?\n");
+        println!("{}",Utc::now());
         println!("1. Create a cat");
         println!("2. Show your cats");
         println!("3. Feed your cats");
@@ -134,3 +135,95 @@ fn main() {
         }
     }
 }
+
+
+
+// use chrono::{Utc, Duration};
+// use std::{thread, time};
+
+// struct Cat {
+//     hunger: i32,      // Hunger level of the cat
+//     created_at: chrono::DateTime<Utc>, // Timestamp of when the cat was created
+// }
+
+// impl Cat {
+//     // Constructor to create a new Cat with a starting hunger value
+//     fn new(hunger: i32) -> Self {
+//         Cat {
+//             hunger,
+//             created_at: Utc::now(),
+//         }
+//     }
+
+//     // Method to update the hunger level by decreasing it based on the number of days
+//     fn update_hunger(&mut self) {
+//         let now = Utc::now();
+//         let days_since_creation = now.signed_duration_since(self.created_at).num_days();
+        
+//         // Decrease hunger by the number of days since the cat was created (if it's positive)
+//         if days_since_creation > 0 {
+//             self.hunger -= days_since_creation as i32;
+//             // Ensure hunger doesn't go negative
+//             if self.hunger < 0 {
+//                 self.hunger = 0;
+//             }
+//         }
+//     }
+
+//     // Method to print the current state of the cat
+//     fn display(&self) {
+//         println!("Hunger: {}", self.hunger);
+//         println!("Created on: {}", self.created_at);
+//     }
+// }
+
+// fn main() {
+//     let mut cat = Cat::new(100); // Starting hunger value is 100
+    
+//     loop {
+//         // Print the current state of the cat
+//         cat.display();
+
+//         // Update hunger based on days passed
+//         cat.update_hunger();
+        
+//         // Sleep for 24 hours (86400 seconds)
+//         let one_day = time::Duration::from_secs(86400);
+//         thread::sleep(one_day);
+//     }
+// }
+
+
+// example to decrement a thing once per day
+
+// use std::{thread, time};
+
+// fn main() {
+//     let mut number = 10; // Initialize the number (you can set this to any starting value)
+    
+//     loop {
+//         println!("Current number: {}", number);
+        
+//         // Decrement the number
+//         number -= 1;
+        
+//         // Check if number has reached 0
+//         if number <= 0 {
+//             println!("Number has reached zero or below. Exiting.");
+//             break;
+//         }
+
+//         // Wait for 24 hours (86400 seconds)
+//         let one_day = time::Duration::from_secs(86400); // 24 hours * 60 minutes * 60 seconds
+//         thread::sleep(one_day);
+//     }
+// }
+
+//TO SUBTRACT TIMES
+// let duration = end_time.signed_duration_since(start_time);
+
+// // Convert the duration to number of days
+// let days = duration.num_days();
+
+// To round down to number of whole cdays
+// let days_rounded_down = duration.num_seconds() / 86400; // 86400 seconds in a day
